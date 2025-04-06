@@ -3,9 +3,17 @@ package com.mytest.junidemo;
 import com.luv2code.junitdemo.DemoUtils;
 import org.junit.jupiter.api.*;
 
+import java.time.Duration;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 //@DisplayNameGeneration(DisplayNameGenerator.IndicativeSentences.class)
+
+//@TestMethodOrder(MethodOrderer.MethodName.class)
+//@TestMethodOrder(MethodOrderer.DisplayName.class)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+
 public class DemoUtilsTest {
     DemoUtils demoUtils;
 
@@ -18,6 +26,7 @@ public class DemoUtilsTest {
 
     @DisplayName("Equals and not Equals")
     @Test
+    @Order(1)
     void testEqualsAndNotEquals(){
 
         System.out.println("Running test: testEqualsAndNotEquals");
@@ -28,6 +37,7 @@ public class DemoUtilsTest {
 
     @DisplayName("Null and not Null")
     @Test
+    @Order(2)
     void testNullAndNotNull(){
         System.out.println("Running test: testNullAndNotNull");
 
@@ -56,7 +66,51 @@ public class DemoUtilsTest {
         assertFalse(demoUtils.isGreater(gradeTwo,gradeOne),"This should return false");
     }
 
+    @DisplayName("Array Equals")
+    @Test
+    @Order(50)
+    void testArrayEquals(){
+        String[] stringArray={"A","B","C"};
 
+        assertArrayEquals(stringArray,demoUtils.getFirstThreeLettersOfAlphabet(),"Arrays shoud be the same");
+    }
+    @DisplayName("Iterable equals")
+    @Test
+    void testIterableEquals() {
+        List<String> theList = List.of("Hugo", "Baltazar", "Sanchez");
+        assertIterableEquals(theList, demoUtils.getAcademyInList(), "Expected list should be the same as actual list");
+    }
+    @DisplayName("Lines Match")
+    @Test
+    @Order(80)
+       void testLinesMatch() {
+           List<String> theList = List.of("Hugo", "Baltazar", "Sanchez");
+           assertLinesMatch(theList, demoUtils.getAcademyInList(), "Expected list should be the same as actual list");
+        }
+
+    @DisplayName("Throws and Does Not Throw")
+    @Test
+    void testThrowsAndDoesNotThrow(){
+
+        //Throws necesita una funcion para regresar la excpetion por eso se ocupa lambda expresion
+        assertThrows(Exception.class,()->{demoUtils.throwException(-1);},"Should throw exception");
+
+        assertDoesNotThrow(()->{demoUtils.throwException(5);},"Should throw exception");
+    }
+
+
+    //Si deseas validar que un metodo se ejecute en determinado tiempo esta es la solucion
+    @DisplayName("Timeout")
+    @Test
+    void testTimeout(){
+        assertTimeoutPreemptively(Duration.ofSeconds(3),()->{demoUtils.checkTimeout();},"Method should execute in 3 seconds");
+    }
+
+    @Test
+    @DisplayName("Multiply")
+void testMultiply(){
+        assertEquals(12,demoUtils.multiply(4,3),"4*3 must be 12");
+    }
 //    //se ejecuta despues de todos los metodos
 //    @AfterEach
 //    void tearDownAfterEach(){
